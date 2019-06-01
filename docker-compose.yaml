@@ -1,0 +1,22 @@
+version: '3.7'
+services:
+mqtt:
+image: eclipse-mosquitto
+ports:
+- "1883:1883"
+- "9001:9001"
+restart: always
+volumes:
+- mosquitto/config:/var/lib/mosquitto/config
+led-detection:
+image: karthikr19/rpi-numpy-scipy-opencv:latest
+ports:
+- "1883:1883"
+privileged: true
+depends_on:
+- "mqtt"
+restart: always
+volumes:
+mosquitto/config:
+command: >
+/bin/bash -c “echo 'listener 9001; protocol websockets' > /var/lib/mosquitto/config/mosquitto.conf"
